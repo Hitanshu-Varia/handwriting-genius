@@ -6,14 +6,16 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { CloudUpload, AlertCircle, CheckCircle2 } from "lucide-react";
+import { CloudUpload, AlertCircle, CheckCircle2, ArrowRight } from "lucide-react";
 import { toast } from "@/lib/toast";
 import MainLayout from "@/layouts/MainLayout";
+import { useNavigate } from "react-router-dom";
 
 const UploadPage = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const navigate = useNavigate();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -47,6 +49,10 @@ const UploadPage = () => {
     }, 200);
   };
 
+  const handleProceedToTraining = () => {
+    navigate("/colab");
+  };
+
   return (
     <MainLayout>
       <div className="container py-12">
@@ -58,6 +64,21 @@ const UploadPage = () => {
               the more accurate your generated handwriting will be.
             </p>
           </div>
+
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Training Process Overview</AlertTitle>
+            <AlertDescription className="space-y-2">
+              <p>Our handwriting training process consists of these steps:</p>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>Upload your handwriting samples here</li>
+                <li>Use our first Colab notebook to create your dataset</li>
+                <li>Use our second Colab notebook to train your model</li>
+                <li>Upload your trained model to generate handwritten text</li>
+              </ol>
+              <p>We provide pre-written code - no coding required!</p>
+            </AlertDescription>
+          </Alert>
 
           <Card>
             <CardHeader>
@@ -116,7 +137,7 @@ const UploadPage = () => {
                 <AlertTitle className="text-green-600">Upload Complete</AlertTitle>
                 <AlertDescription>
                   Your handwriting samples have been uploaded successfully. You can now proceed to 
-                  the training step.
+                  the training step where our pre-written notebooks will guide you through the process.
                 </AlertDescription>
               </Alert>
             )}
@@ -134,8 +155,9 @@ const UploadPage = () => {
 
           {uploadStatus === "success" && (
             <div className="flex justify-center">
-              <Button asChild>
-                <a href="/colab">Proceed to Training</a>
+              <Button onClick={handleProceedToTraining}>
+                Proceed to Training
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           )}
