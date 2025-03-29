@@ -1,239 +1,192 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Download, RefreshCw, Upload } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Wand2, Download, Share2, Save } from "lucide-react";
+import { toast } from "@/lib/toast";
 import MainLayout from "@/layouts/MainLayout";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const GeneratePage = () => {
   const [inputText, setInputText] = useState("");
-  const [modelUploaded, setModelUploaded] = useState(false);
+  const [fontSize, setFontSize] = useState(24);
+  const [lineSpacing, setLineSpacing] = useState(1.5);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
-  const [slant, setSlant] = useState([0]);
-  const [spacing, setSpacing] = useState([50]);
-
-  const handleModelUpload = () => {
-    // In a real app, you would handle the model file upload here
-    setModelUploaded(true);
-    toast.success("Model uploaded successfully!");
-  };
+  const [includeSignature, setIncludeSignature] = useState(false);
 
   const handleGenerate = () => {
     if (!inputText.trim()) {
-      toast.error("Please enter some text to generate");
+      toast.error("Please enter some text to generate handwriting");
       return;
     }
-    
-    if (!modelUploaded) {
-      toast.error("Please upload your trained model first");
-      return;
-    }
-    
+
     setIsGenerating(true);
     
-    // Simulate generation delay
+    // Simulate API call to generate handwriting
     setTimeout(() => {
-      setIsGenerating(false);
-      
-      // In a real app, this would be the actual generation result
-      // For now, we'll use a placeholder image
       setGeneratedImage("/placeholder.svg");
-      toast.success("Text generated in your handwriting style!");
+      setIsGenerating(false);
+      toast.success("Handwriting generated successfully!");
     }, 2000);
   };
 
+  const handleSaveToGallery = () => {
+    if (generatedImage) {
+      toast.success("Saved to your gallery");
+    }
+  };
+
   const handleDownload = () => {
-    // In a real app, this would download the actual generated image
-    toast.success("Image downloaded");
+    if (generatedImage) {
+      toast.success("Handwriting image downloaded");
+    }
+  };
+
+  const handleShare = () => {
+    if (generatedImage) {
+      toast.success("Sharing options opened");
+    }
   };
 
   return (
     <MainLayout>
       <div className="container py-12">
-        <div className="mx-auto max-w-4xl space-y-6">
-          <div className="space-y-2 text-center">
-            <h1 className="text-3xl font-bold">Generate Your Handwriting</h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              Type any text and see it transformed into your handwriting style.
+        <div className="mx-auto max-w-5xl space-y-8">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold">Generate Handwriting</h1>
+            <p className="text-gray-500">
+              Turn your text into realistic handwriting based on your trained model.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Text Input</CardTitle>
-                <CardDescription>
-                  Enter the text you want to convert to your handwriting.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {!modelUploaded && (
-                  <div className="bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 p-4 rounded-md mb-4">
-                    <p className="text-sm">
-                      You need to upload your trained model before generating text.
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-2"
-                      onClick={handleModelUpload}
-                    >
-                      <Upload className="mr-2 h-4 w-4" />
-                      Upload Model
-                    </Button>
-                  </div>
-                )}
-
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="text-input">Enter Your Text</Label>
                 <Textarea
-                  placeholder="Enter your text here..."
-                  className="min-h-[200px] resize-y"
+                  id="text-input"
+                  placeholder="Type or paste the text you want to convert to handwriting..."
+                  className="min-h-32 resize-none"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                 />
+                <p className="text-xs text-gray-500">
+                  {inputText.length} characters | {inputText.split(/\s+/).filter(Boolean).length} words
+                </p>
+              </div>
 
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium">Writing Slant</label>
-                    <Slider
-                      defaultValue={[0]}
-                      min={-30}
-                      max={30}
-                      step={1}
-                      value={slant}
-                      onValueChange={setSlant}
-                      className="mt-2"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>Left Slant</span>
-                      <span>{slant[0]}°</span>
-                      <span>Right Slant</span>
+              <Separator />
+
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <Label htmlFor="font-size">Font Size: {fontSize}px</Label>
                     </div>
+                    <Slider
+                      id="font-size"
+                      min={12}
+                      max={36}
+                      step={1}
+                      value={[fontSize]}
+                      onValueChange={(values) => setFontSize(values[0])}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <Label htmlFor="line-spacing">Line Spacing: {lineSpacing.toFixed(1)}</Label>
+                    </div>
+                    <Slider
+                      id="line-spacing"
+                      min={1.0}
+                      max={3.0}
+                      step={0.1}
+                      value={[lineSpacing]}
+                      onValueChange={(values) => setLineSpacing(values[0])}
+                    />
                   </div>
 
-                  <div>
-                    <label className="text-sm font-medium">Character Spacing</label>
-                    <Slider
-                      defaultValue={[50]}
-                      min={0}
-                      max={100}
-                      step={1}
-                      value={spacing}
-                      onValueChange={setSpacing}
-                      className="mt-2"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="include-signature" 
+                      checked={includeSignature}
+                      onCheckedChange={(checked) => 
+                        setIncludeSignature(checked === true)
+                      }
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>Tight</span>
-                      <span>{spacing[0]}%</span>
-                      <span>Wide</span>
-                    </div>
+                    <Label htmlFor="include-signature">Include my signature</Label>
                   </div>
                 </div>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full"
-                  onClick={handleGenerate}
+
+                <Button 
+                  className="w-full" 
+                  onClick={handleGenerate} 
                   disabled={isGenerating || !inputText.trim()}
                 >
                   {isGenerating ? (
+                    "Generating..."
+                  ) : (
                     <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
+                      <Wand2 className="mr-2 h-4 w-4" />
+                      Generate Handwriting
                     </>
-                  ) : (
-                    "Generate Handwriting"
                   )}
                 </Button>
-              </CardFooter>
-            </Card>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Generated Handwriting</CardTitle>
-                <CardDescription>
-                  Preview and download your handwritten text.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div 
-                  className="flex items-center justify-center bg-white dark:bg-gray-800 border rounded-md w-full h-[300px] paper-texture"
-                >
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold">Preview</h2>
+              <Card className="overflow-hidden h-[500px]">
+                <ScrollArea className="h-full">
                   {generatedImage ? (
-                    <div className="p-4 w-full h-full">
-                      {/* In a real implementation, this would display the actual generated handwriting */}
-                      <div className="h-full flex items-center justify-center">
-                        <p className="handwriting text-xl ink-blue animate-writing">
-                          {inputText || "Your handwritten text will appear here."}
-                        </p>
-                      </div>
-                    </div>
+                    <CardContent className="p-6 paper-texture">
+                      <p 
+                        className="handwriting ink-blue whitespace-pre-line" 
+                        style={{ fontSize: `${fontSize}px`, lineHeight: lineSpacing }}
+                      >
+                        {inputText || "Your handwritten text will appear here"}
+                      </p>
+                      {includeSignature && (
+                        <div className="mt-8">
+                          <p className="handwriting ink-blue text-xl">Signature</p>
+                        </div>
+                      )}
+                    </CardContent>
                   ) : (
-                    <div className="text-center text-gray-400 dark:text-gray-500">
-                      <p>Your handwritten text will appear here</p>
-                    </div>
+                    <CardContent className="flex h-full items-center justify-center p-6">
+                      <p className="text-gray-400 text-center">
+                        Generate handwriting to see the preview here
+                      </p>
+                    </CardContent>
                   )}
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={handleGenerate}
-                  disabled={isGenerating || !generatedImage}
-                >
-                  Regenerate
-                </Button>
-                <Button
-                  onClick={handleDownload}
-                  disabled={!generatedImage}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
+                </ScrollArea>
+              </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>About Your Model</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {modelUploaded ? (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Model Status:</span>
-                    <span className="text-green-600 dark:text-green-400">Active</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Training Samples:</span>
-                    <span>20 images</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Last Updated:</span>
-                    <span>Today</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">Model Quality:</span>
-                    <span>High</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center space-y-2">
-                  <p className="text-gray-500 dark:text-gray-400">
-                    You haven't uploaded a trained model yet.
-                  </p>
-                  <Button onClick={handleModelUpload}>
-                    <Upload className="mr-2 h-4 w-4" />
-                    Upload Model
+              {generatedImage && (
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1" onClick={handleSaveToGallery}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save to Gallery
+                  </Button>
+                  <Button variant="outline" onClick={handleShare}>
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" onClick={handleDownload}>
+                    <Download className="h-4 w-4" />
                   </Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </MainLayout>

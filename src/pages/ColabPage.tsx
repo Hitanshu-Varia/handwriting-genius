@@ -1,214 +1,157 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ExternalLink, Copy, FileCode, CheckCircle } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
+import { AlertCircle, Play, Copy, Download, ExternalLink } from "lucide-react";
+import { toast } from "@/lib/toast";
 import MainLayout from "@/layouts/MainLayout";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
 
 const ColabPage = () => {
-  const colabUrl = "https://colab.research.google.com/";
+  const [colabLink, setColabLink] = useState("");
+  const [isGeneratingLink, setIsGeneratingLink] = useState(false);
 
-  const copyColabLink = () => {
-    navigator.clipboard.writeText(colabUrl);
-    toast.success("Colab link copied to clipboard");
+  const handleGenerateLink = () => {
+    setIsGeneratingLink(true);
+    
+    // Simulate API call to generate a Colab link
+    setTimeout(() => {
+      const link = "https://colab.research.google.com/drive/1examplecolablink123456";
+      setColabLink(link);
+      setIsGeneratingLink(false);
+      toast.success("Google Colab notebook link generated successfully!");
+    }, 2000);
+  };
+
+  const handleCopyLink = () => {
+    if (colabLink) {
+      navigator.clipboard.writeText(colabLink);
+      toast.success("Colab link copied to clipboard");
+    }
   };
 
   return (
     <MainLayout>
       <div className="container py-12">
-        <div className="mx-auto max-w-4xl space-y-6">
+        <div className="mx-auto max-w-4xl space-y-8">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold">Train Your Handwriting Model</h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              Use our Google Colab notebook to train a custom AI model on your handwriting.
+            <p className="text-gray-500">
+              Use Google Colab to train a neural network on your handwriting samples. The process is 
+              fully automated - just follow the steps below.
             </p>
           </div>
 
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Training typically takes 15-30 minutes depending on the number of samples you uploaded.
+              Make sure not to close your browser during this time.
+            </AlertDescription>
+          </Alert>
+
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <FileCode className="mr-2 h-5 w-5 text-blue-500" />
-                Handwriting cGAN Training Notebook
-              </CardTitle>
-              <CardDescription>
-                Follow the step-by-step instructions to train your model.
-              </CardDescription>
+              <CardTitle>Training Process</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-                <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300">
-                  Before You Begin
-                </h3>
-                <p className="text-sm mt-2">
-                  Make sure you have uploaded your handwriting samples to the platform. You'll need to 
-                  download a ZIP file of your samples to use in the Colab notebook.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">Open Google Colab Notebook</h3>
-                  <p className="text-sm text-gray-500">
-                    Click the button to open our pre-configured Colab notebook.
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={copyColabLink}>
-                    <Copy className="mr-2 h-4 w-4" />
-                    Copy Link
-                  </Button>
-                  <Button asChild>
-                    <a href={colabUrl} target="_blank" rel="noopener noreferrer">
-                      Open Notebook
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
-
-              <Separator />
-
+            <CardContent className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Notebook Instructions</h3>
-                <ol className="space-y-6 list-decimal list-inside">
-                  <li className="p-4 bg-gray-50 dark:bg-gray-900 rounded-md">
-                    <div className="flex items-start">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
-                        1
-                      </div>
-                      <div className="ml-3">
-                        <h4 className="font-semibold">Set Up the Environment</h4>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Run the first cell to install all required dependencies. This may take a few minutes.
-                        </p>
-                        <div className="mt-2 flex items-center text-sm text-green-600">
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Expected output: "Setup complete!"
+                <div className="flex items-start gap-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                    1
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-medium">Generate Google Colab Notebook Link</p>
+                    <p className="text-sm text-gray-500">
+                      Click the button below to generate a custom Colab notebook with your uploaded 
+                      handwriting data.
+                    </p>
+                    <Button 
+                      onClick={handleGenerateLink} 
+                      disabled={isGeneratingLink || colabLink !== ""}
+                    >
+                      {isGeneratingLink ? (
+                        "Generating..."
+                      ) : colabLink ? (
+                        "Link Generated"
+                      ) : (
+                        <>
+                          <Play className="mr-2 h-4 w-4" />
+                          Generate Colab Link
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="flex items-start gap-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                    2
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-medium">Open and Run the Notebook</p>
+                    <p className="text-sm text-gray-500">
+                      Open the generated notebook in Google Colab and click "Run All" from the "Runtime" 
+                      menu. The notebook contains pre-written code that will train a model based on your 
+                      handwriting samples.
+                    </p>
+                    
+                    {colabLink && (
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex items-center gap-2 p-2 bg-gray-100 rounded">
+                          <code className="text-sm flex-1 truncate">{colabLink}</code>
+                          <Button variant="ghost" size="icon" onClick={handleCopyLink}>
+                            <Copy className="h-4 w-4" />
+                          </Button>
                         </div>
+                        <Button asChild>
+                          <a href={colabLink} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="mr-2 h-4 w-4" />
+                            Open in Google Colab
+                          </a>
+                        </Button>
                       </div>
+                    )}
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="flex items-start gap-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                    3
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-medium">Download Trained Model</p>
+                    <p className="text-sm text-gray-500">
+                      After training completes, download the model file from Colab and upload it here.
+                      This will enable you to generate handwritten text in your own style.
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Input id="model-upload" type="file" accept=".h5, .pkl" className="cursor-pointer" />
+                      <Button>
+                        <Download className="mr-2 h-4 w-4" />
+                        Upload Model
+                      </Button>
                     </div>
-                  </li>
-
-                  <li className="p-4 bg-gray-50 dark:bg-gray-900 rounded-md">
-                    <div className="flex items-start">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
-                        2
-                      </div>
-                      <div className="ml-3">
-                        <h4 className="font-semibold">Upload Your Handwriting Data</h4>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Run the second cell and follow the prompts to upload your ZIP file of handwriting samples.
-                        </p>
-                        <div className="mt-2 flex items-center text-sm text-green-600">
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Expected output: "Data loaded successfully: X samples found."
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-
-                  <li className="p-4 bg-gray-50 dark:bg-gray-900 rounded-md">
-                    <div className="flex items-start">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
-                        3
-                      </div>
-                      <div className="ml-3">
-                        <h4 className="font-semibold">Preprocess Your Handwriting</h4>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Run the third cell to clean and prepare your handwriting samples for training.
-                        </p>
-                        <div className="mt-2 flex items-center text-sm text-green-600">
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Expected output: "Preprocessing complete!"
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-
-                  <li className="p-4 bg-gray-50 dark:bg-gray-900 rounded-md">
-                    <div className="flex items-start">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
-                        4
-                      </div>
-                      <div className="ml-3">
-                        <h4 className="font-semibold">Train the cGAN Model</h4>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Run the fourth cell to start training. This will take 1-2 hours depending on your samples.
-                          You'll see progress updates as it trains.
-                        </p>
-                        <div className="mt-2 flex items-center text-sm text-green-600">
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Expected output: "Training complete! Model saved."
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-
-                  <li className="p-4 bg-gray-50 dark:bg-gray-900 rounded-md">
-                    <div className="flex items-start">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
-                        5
-                      </div>
-                      <div className="ml-3">
-                        <h4 className="font-semibold">Test and Download Your Model</h4>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Run the final cell to test the model with some sample text and download the trained model file.
-                        </p>
-                        <div className="mt-2 flex items-center text-sm text-green-600">
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Expected output: "Model test complete! Download your model below."
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                </ol>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">After Training</h3>
-                <p>
-                  Once your model is trained and downloaded, return to this site and upload your model
-                  file on the Generate page. This will enable you to create handwritten text anytime!
-                </p>
-                <Button asChild>
-                  <a href="/generate">
-                    Go to Generate Page
-                  </a>
-                </Button>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Troubleshooting</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="text-sm font-medium">Colab disconnects during training</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Google Colab sometimes disconnects after periods of inactivity. Make sure to keep the browser tab active
-                  during training. If disconnected, reconnect and run the cells from where you left off.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium">Training is slow</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Training speed depends on the free GPU resources Google provides. For faster training, consider upgrading to Colab Pro.
-                </p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium">Model quality issues</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  If your model doesn't produce good results, try adding more handwriting samples with a wider variety of characters
-                  and writing styles. At least 30-50 samples are recommended for best results.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex justify-between">
+            <Button variant="outline" asChild>
+              <a href="/upload">Back to Upload</a>
+            </Button>
+            <Button disabled={true} asChild>
+              <a href="/generate">Go to Generator</a>
+            </Button>
+          </div>
         </div>
       </div>
     </MainLayout>
