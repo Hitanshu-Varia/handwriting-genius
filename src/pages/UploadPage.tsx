@@ -76,7 +76,7 @@ const UploadPage = () => {
                 <li>Use our second Colab notebook to train your model</li>
                 <li>Upload your trained model to generate handwritten text</li>
               </ol>
-              <p>We provide pre-written code - no coding required!</p>
+              <p>We provide pre-written code notebooks - no coding required!</p>
             </AlertDescription>
           </Alert>
 

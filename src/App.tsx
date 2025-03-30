@@ -10,6 +10,7 @@ import GuidePage from "./pages/GuidePage";
 import GeneratePage from "./pages/GeneratePage";
 import GalleryPage from "./pages/GalleryPage";
 import ColabPage from "./pages/ColabPage";
+import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/generate" element={<GeneratePage />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/colab" element={<ColabPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>
