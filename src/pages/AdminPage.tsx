@@ -3,13 +3,15 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Pencil, Trash2, ShieldAlert, Download, FileUp } from "lucide-react";
+import { Pencil, Trash2, ShieldAlert, Download, FileUp, LogIn, Facebook, LucideGoogle } from "lucide-react";
 import { toast } from "@/lib/toast";
 import MainLayout from "@/layouts/MainLayout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 
 // Mock storage for files (would be replaced with actual backend storage in production)
 type NotebookFile = {
@@ -41,7 +43,95 @@ const initialFiles: NotebookFile[] = [
   }
 ];
 
-// Simple auth check (in a real app, use proper authentication)
+// User login component
+const UserAuth = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+
+  const handleLogin = () => {
+    if (!email || !password) {
+      setError(true);
+      toast.error("Please fill in all fields");
+      return;
+    }
+    
+    // Mock user login - in a real app, this would authenticate with a backend
+    localStorage.setItem("user_authenticated", "true");
+    toast.success("Login successful!");
+    window.location.href = "/";
+  };
+
+  const handleSocialLogin = (provider: string) => {
+    // Mock social login - in a real app, this would redirect to the provider's auth page
+    toast.success(`Logging in with ${provider}...`);
+    setTimeout(() => {
+      localStorage.setItem("user_authenticated", "true");
+      window.location.href = "/";
+    }, 1000);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input 
+          id="email" 
+          type="email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="user-password">Password</Label>
+        <Input 
+          id="user-password" 
+          type="password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter your password"
+        />
+      </div>
+      {error && (
+        <Alert variant="destructive">
+          <AlertTitle>Login Failed</AlertTitle>
+          <AlertDescription>
+            Please check your credentials and try again.
+          </AlertDescription>
+        </Alert>
+      )}
+      <Button onClick={handleLogin} className="w-full">
+        <LogIn className="mr-2 h-4 w-4" />
+        Login
+      </Button>
+      
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator className="w-full" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-4">
+        <Button onClick={() => handleSocialLogin("Google")} variant="outline" className="w-full">
+          <LucideGoogle className="mr-2 h-4 w-4" />
+          Google
+        </Button>
+        <Button onClick={() => handleSocialLogin("Facebook")} variant="outline" className="w-full">
+          <Facebook className="mr-2 h-4 w-4" />
+          Facebook
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// Admin auth component
 const AdminAuth = ({ onAuth }: { onAuth: () => void }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -51,6 +141,7 @@ const AdminAuth = ({ onAuth }: { onAuth: () => void }) => {
     if (password === "admin123") {
       localStorage.setItem("admin_authenticated", "true");
       onAuth();
+      toast.success("Admin authentication successful");
     } else {
       setError(true);
       toast.error("Invalid admin password");
@@ -58,37 +149,30 @@ const AdminAuth = ({ onAuth }: { onAuth: () => void }) => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto mt-12">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ShieldAlert className="h-5 w-5" />
-          Admin Authentication
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="password">Admin Password</Label>
-          <Input 
-            id="password" 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter admin password"
-          />
-        </div>
-        {error && (
-          <Alert variant="destructive">
-            <AlertTitle>Authentication Failed</AlertTitle>
-            <AlertDescription>
-              The password you entered is incorrect.
-            </AlertDescription>
-          </Alert>
-        )}
-        <Button onClick={handleAuth} className="w-full">
-          Login to Admin Panel
-        </Button>
-      </CardContent>
-    </Card>
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="admin-password">Admin Password</Label>
+        <Input 
+          id="admin-password" 
+          type="password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Enter admin password"
+        />
+      </div>
+      {error && (
+        <Alert variant="destructive">
+          <AlertTitle>Authentication Failed</AlertTitle>
+          <AlertDescription>
+            The password you entered is incorrect.
+          </AlertDescription>
+        </Alert>
+      )}
+      <Button onClick={handleAuth} className="w-full">
+        <ShieldAlert className="mr-2 h-4 w-4" />
+        Login to Admin Panel
+      </Button>
+    </div>
   );
 };
 
@@ -309,7 +393,6 @@ const AdminPage = () => {
 
   const downloadFile = (fileUrl: string, fileName: string) => {
     // In a real app, this would initiate a download of the actual file
-    // For this demo, we'll just show a toast
     toast.info(`Downloading ${fileName}...`);
     
     // If we have actual files to download:
@@ -325,7 +408,30 @@ const AdminPage = () => {
     return (
       <MainLayout>
         <div className="container py-12">
-          <AdminAuth onAuth={() => setIsAuthenticated(true)} />
+          <div className="mx-auto max-w-md space-y-6">
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle className="text-center">Welcome to HandwritingGenius</CardTitle>
+                <CardDescription className="text-center">
+                  Login to your account or access the admin panel
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="user" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="user">User Login</TabsTrigger>
+                    <TabsTrigger value="admin">Admin Access</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="user" className="mt-4">
+                    <UserAuth />
+                  </TabsContent>
+                  <TabsContent value="admin" className="mt-4">
+                    <AdminAuth onAuth={() => setIsAuthenticated(true)} />
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </MainLayout>
     );

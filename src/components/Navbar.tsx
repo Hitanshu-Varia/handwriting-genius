@@ -1,14 +1,29 @@
 
 import { Link } from "react-router-dom";
-import { PenLine, Menu, X } from "lucide-react";
+import { PenLine, Menu, X, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userAuth = localStorage.getItem("user_authenticated");
+    const adminAuth = localStorage.getItem("admin_authenticated");
+    setIsLoggedIn(userAuth === "true" || adminAuth === "true");
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user_authenticated");
+    localStorage.removeItem("admin_authenticated");
+    setIsLoggedIn(false);
+    window.location.href = "/admin";
   };
 
   return (
@@ -55,9 +70,18 @@ const Navbar = () => {
         </nav>
         
         <div className="hidden md:flex items-center space-x-4">
-          <Button asChild>
-            <Link to="/upload">Get Started</Link>
-          </Button>
+          {isLoggedIn ? (
+            <Button variant="outline" onClick={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <Button asChild>
+              <Link to="/admin">
+                <LogIn className="mr-2 h-4 w-4" />
+                Login
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -108,14 +132,25 @@ const Navbar = () => {
               Guide
             </Link>
             <div className="px-4 py-2">
-              <Button asChild className="w-full">
-                <Link 
-                  to="/upload" 
-                  onClick={() => setIsMenuOpen(false)}
+              {isLoggedIn ? (
+                <Button 
+                  onClick={handleLogout} 
+                  className="w-full"
+                  variant="outline"
                 >
-                  Get Started
-                </Link>
-              </Button>
+                  Logout
+                </Button>
+              ) : (
+                <Button asChild className="w-full">
+                  <Link 
+                    to="/admin" 
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Login
+                  </Link>
+                </Button>
+              )}
             </div>
           </nav>
         </div>
