@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,23 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Pencil, Trash2, ShieldAlert, Download, FileUp, LogIn, Facebook, LucideGoogle } from "lucide-react";
+import { Pencil, Trash2, ShieldAlert, Download, FileUp, LogIn, Facebook, Github } from "lucide-react";
 import { toast } from "@/lib/toast";
 import MainLayout from "@/layouts/MainLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 
-// Mock storage for files (would be replaced with actual backend storage in production)
 type NotebookFile = {
   id: string;
   name: string;
   type: "dataset" | "training";
   description: string;
   uploadDate: string;
-  fileUrl: string; // In a real app, this would be a URL to the stored file
+  fileUrl: string;
 }
 
-// Initial sample data
 const initialFiles: NotebookFile[] = [
   {
     id: "1",
@@ -43,7 +40,6 @@ const initialFiles: NotebookFile[] = [
   }
 ];
 
-// User login component
 const UserAuth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,14 +52,12 @@ const UserAuth = () => {
       return;
     }
     
-    // Mock user login - in a real app, this would authenticate with a backend
     localStorage.setItem("user_authenticated", "true");
     toast.success("Login successful!");
     window.location.href = "/";
   };
 
   const handleSocialLogin = (provider: string) => {
-    // Mock social login - in a real app, this would redirect to the provider's auth page
     toast.success(`Logging in with ${provider}...`);
     setTimeout(() => {
       localStorage.setItem("user_authenticated", "true");
@@ -119,7 +113,7 @@ const UserAuth = () => {
       
       <div className="grid grid-cols-2 gap-4">
         <Button onClick={() => handleSocialLogin("Google")} variant="outline" className="w-full">
-          <LucideGoogle className="mr-2 h-4 w-4" />
+          <Github className="mr-2 h-4 w-4" />
           Google
         </Button>
         <Button onClick={() => handleSocialLogin("Facebook")} variant="outline" className="w-full">
@@ -131,13 +125,11 @@ const UserAuth = () => {
   );
 };
 
-// Admin auth component
 const AdminAuth = ({ onAuth }: { onAuth: () => void }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
 
   const handleAuth = () => {
-    // Very basic authentication - in a real app, use a proper auth system
     if (password === "admin123") {
       localStorage.setItem("admin_authenticated", "true");
       onAuth();
@@ -176,7 +168,6 @@ const AdminAuth = ({ onAuth }: { onAuth: () => void }) => {
   );
 };
 
-// File upload component
 const FileUploadForm = ({ 
   onFileUploaded 
 }: { 
@@ -190,7 +181,6 @@ const FileUploadForm = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedFile(e.target.files[0]);
-      // Use the file name if no custom name has been entered
       if (!fileName) {
         setFileName(e.target.files[0].name);
       }
@@ -210,20 +200,17 @@ const FileUploadForm = ({
       return;
     }
 
-    // In a real app, you would upload the file to a server here
-    // For now, we'll just create a mock file URL
     const newFile: NotebookFile = {
       id: Date.now().toString(),
       name: fileName,
       type: fileType,
       description: fileDescription,
       uploadDate: new Date().toISOString(),
-      fileUrl: URL.createObjectURL(selectedFile) // This creates a temporary local URL
+      fileUrl: URL.createObjectURL(selectedFile)
     };
 
     onFileUploaded(newFile);
     
-    // Reset form
     setFileName("");
     setFileType("dataset");
     setFileDescription("");
@@ -291,7 +278,6 @@ const FileUploadForm = ({
   );
 };
 
-// File edit component
 const FileEditForm = ({ 
   file, 
   onFileUpdated 
@@ -367,7 +353,6 @@ const AdminPage = () => {
   const [files, setFiles] = useState<NotebookFile[]>(initialFiles);
   const [editingFile, setEditingFile] = useState<NotebookFile | null>(null);
 
-  // Check if admin is already authenticated
   useEffect(() => {
     const authStatus = localStorage.getItem("admin_authenticated");
     if (authStatus === "true") {
@@ -392,10 +377,8 @@ const AdminPage = () => {
   };
 
   const downloadFile = (fileUrl: string, fileName: string) => {
-    // In a real app, this would initiate a download of the actual file
     toast.info(`Downloading ${fileName}...`);
     
-    // If we have actual files to download:
     const link = document.createElement("a");
     link.href = fileUrl;
     link.download = fileName;
