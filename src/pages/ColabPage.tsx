@@ -1,20 +1,40 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { FileDown, AlertCircle, Download, UploadCloud, Code2, Beaker } from "lucide-react";
+import { FileDown, AlertCircle, UploadCloud, Code2, Beaker } from "lucide-react";
 import { toast } from "@/lib/toast";
 import MainLayout from "@/layouts/MainLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { useNotebooks } from "@/context/NotebookContext";
 
 const ColabPage = () => {
   const [activeTab, setActiveTab] = useState("dataset");
+  const { files } = useNotebooks();
 
   const handleDownloadNotebook = (notebookType: string) => {
-    // Simulate download
-    toast.success(`${notebookType} notebook downloaded successfully`);
+    // Find the correct notebook based on type
+    const notebook = files.find(file => 
+      (notebookType === "Dataset Creation" && file.type === "dataset") || 
+      (notebookType === "Model Training" && file.type === "training")
+    );
+
+    if (notebook) {
+      // Create a download link and click it
+      const link = document.createElement("a");
+      link.href = notebook.fileUrl;
+      link.download = notebook.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success(`${notebookType} notebook downloaded successfully`);
+    } else {
+      toast.error(`No ${notebookType} notebook available. Please contact an administrator.`);
+    }
   };
 
   return (

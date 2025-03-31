@@ -12,6 +12,7 @@ import GalleryPage from "./pages/GalleryPage";
 import ColabPage from "./pages/ColabPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
+import { NotebookProvider } from "./context/NotebookContext";
 
 const queryClient = new QueryClient();
 
@@ -20,18 +21,20 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/upload" element={<UploadPage />} />
-            <Route path="/guide" element={<GuidePage />} />
-            <Route path="/generate" element={<GeneratePage />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/colab" element={<ColabPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <NotebookProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/upload" element={<UploadPage />} />
+              <Route path="/guide" element={<GuidePage />} />
+              <Route path="/generate" element={<GeneratePage />} />
+              <Route path="/gallery" element={<GalleryPage />} />
+              <Route path="/colab" element={<ColabPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </NotebookProvider>
         </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>

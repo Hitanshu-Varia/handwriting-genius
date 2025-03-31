@@ -11,6 +11,7 @@ import { toast } from "@/lib/toast";
 import MainLayout from "@/layouts/MainLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { useNotebooks, type NotebookFile } from "@/context/NotebookContext";
 
 type NotebookFile = {
   id: string;
@@ -350,8 +351,8 @@ const FileEditForm = ({
 
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [files, setFiles] = useState<NotebookFile[]>(initialFiles);
   const [editingFile, setEditingFile] = useState<NotebookFile | null>(null);
+  const { files, addFile, updateFile, deleteFile } = useNotebooks();
 
   useEffect(() => {
     const authStatus = localStorage.getItem("admin_authenticated");
@@ -361,18 +362,18 @@ const AdminPage = () => {
   }, []);
 
   const handleFileUploaded = (newFile: NotebookFile) => {
-    setFiles(prev => [...prev, newFile]);
+    addFile(newFile);
+    toast.success("File uploaded successfully");
   };
 
   const handleFileUpdated = (updatedFile: NotebookFile) => {
-    setFiles(prev => prev.map(file => 
-      file.id === updatedFile.id ? updatedFile : file
-    ));
+    updateFile(updatedFile);
     setEditingFile(null);
+    toast.success("File updated successfully");
   };
 
   const handleFileDeleted = (fileId: string) => {
-    setFiles(prev => prev.filter(file => file.id !== fileId));
+    deleteFile(fileId);
     toast.success("File deleted successfully");
   };
 
