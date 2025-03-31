@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -174,7 +173,7 @@ const ColabPage = () => {
                   </p>
                   <Button asChild variant="outline">
                     <a href="/generate">
-                      <Upload className="mr-2 h-4 w-4" />
+                      <FileDown className="mr-2 h-4 w-4" />
                       Go to Generate Page
                     </a>
                   </Button>
@@ -185,7 +184,7 @@ const ColabPage = () => {
 
           <div className="bg-gray-50 p-6 rounded-lg space-y-4">
             <div className="flex items-start space-x-4">
-              <DownloadCloud className="h-8 w-8 text-blue-600 mt-1" />
+              <UploadCloud className="h-8 w-8 text-blue-600 mt-1" />
               <div>
                 <h3 className="text-lg font-medium">Need help with the notebooks?</h3>
                 <p className="text-gray-500">
