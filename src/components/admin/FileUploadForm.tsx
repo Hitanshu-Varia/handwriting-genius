@@ -19,9 +19,17 @@ const FileUploadForm = ({ onFileUploaded }: FileUploadFormProps) => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      
+      // Validate the file is a .ipynb file
+      if (!file.name.toLowerCase().endsWith('.ipynb')) {
+        toast.error("Please upload a valid .ipynb notebook file");
+        return;
+      }
+      
+      setSelectedFile(file);
       if (!fileName) {
-        setFileName(e.target.files[0].name);
+        setFileName(file.name);
       }
     }
   };
@@ -38,14 +46,20 @@ const FileUploadForm = ({ onFileUploaded }: FileUploadFormProps) => {
       toast.error("Please provide a name for the file");
       return;
     }
-
+    
+    // Ensure the file has the .ipynb extension
+    const displayName = fileName.endsWith('.ipynb') ? fileName : `${fileName}.ipynb`;
+    
+    // Create a blob with the correct MIME type
+    const notebookBlob = new Blob([selectedFile], { type: 'application/x-ipynb+json' });
+    
     const newFile: NotebookFile = {
       id: Date.now().toString(),
-      name: fileName,
+      name: displayName,
       type: fileType,
       description: fileDescription,
       uploadDate: new Date().toISOString(),
-      fileUrl: URL.createObjectURL(selectedFile)
+      fileUrl: URL.createObjectURL(notebookBlob)
     };
 
     onFileUploaded(newFile);
@@ -55,7 +69,7 @@ const FileUploadForm = ({ onFileUploaded }: FileUploadFormProps) => {
     setFileDescription("");
     setSelectedFile(null);
     
-    toast.success("File uploaded successfully");
+    toast.success("Notebook file uploaded successfully");
   };
 
   return (

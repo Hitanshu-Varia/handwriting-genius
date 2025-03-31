@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,15 +22,57 @@ const ColabPage = () => {
     );
 
     if (notebook) {
-      // Create a download link and click it
-      const link = document.createElement("a");
-      link.href = notebook.fileUrl;
-      link.download = notebook.name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      toast.success(`${notebookType} notebook downloaded successfully`);
+      // Create a blob from the file URL if it's a blob URL
+      if (notebook.fileUrl.startsWith('blob:')) {
+        fetch(notebook.fileUrl)
+          .then(response => response.blob())
+          .then(blob => {
+            // Create a new Blob with the correct MIME type
+            const ipynbBlob = new Blob([blob], { type: 'application/x-ipynb+json' });
+            
+            // Create a download link and click it
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(ipynbBlob);
+            link.download = notebook.name.endsWith('.ipynb') ? notebook.name : `${notebook.name}.ipynb`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Clean up the URL object
+            URL.revokeObjectURL(link.href);
+            
+            toast.success(`${notebookType} notebook downloaded successfully`);
+          })
+          .catch(error => {
+            console.error("Error downloading notebook:", error);
+            toast.error(`Error downloading ${notebookType} notebook. Please try again.`);
+          });
+      } else {
+        // Handle regular URL (like static files from public folder)
+        fetch(notebook.fileUrl)
+          .then(response => response.blob())
+          .then(blob => {
+            // Create a new Blob with the correct MIME type
+            const ipynbBlob = new Blob([blob], { type: 'application/x-ipynb+json' });
+            
+            // Create a download link and click it
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(ipynbBlob);
+            link.download = notebook.name.endsWith('.ipynb') ? notebook.name : `${notebook.name}.ipynb`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Clean up the URL object
+            URL.revokeObjectURL(link.href);
+            
+            toast.success(`${notebookType} notebook downloaded successfully`);
+          })
+          .catch(error => {
+            console.error("Error downloading notebook:", error);
+            toast.error(`Error downloading ${notebookType} notebook. Please try again.`);
+          });
+      }
     } else {
       toast.error(`No ${notebookType} notebook available. Please contact an administrator.`);
     }
