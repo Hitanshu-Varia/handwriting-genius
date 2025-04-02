@@ -3,6 +3,15 @@ import { Link } from "react-router-dom";
 import { PenLine, Menu, X, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,26 +57,93 @@ const Navbar = () => {
         </button>
 
         {/* Desktop navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Home
-          </Link>
-          <Link to="/upload" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Upload
-          </Link>
-          <Link to="/colab" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Train
-          </Link>
-          <Link to="/generate" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Generate
-          </Link>
-          <Link to="/gallery" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Gallery
-          </Link>
-          <Link to="/guide" className="text-sm font-medium hover:text-blue-600 transition-colors">
-            Guide
-          </Link>
-        </nav>
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link to="/" className={navigationMenuTriggerStyle()}>
+                Home
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Services</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  <Link to="/upload" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Upload</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Upload your handwriting samples
+                    </p>
+                  </Link>
+                  <Link to="/colab" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Train</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Train a model with your handwriting
+                    </p>
+                  </Link>
+                  <Link to="/generate" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Generate</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Generate handwritten text
+                    </p>
+                  </Link>
+                  <Link to="/gallery" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Gallery</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      View your generated handwriting
+                    </p>
+                  </Link>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  <Link to="/guide" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Guide</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Learn how to use our platform
+                    </p>
+                  </Link>
+                  <Link to="/blog" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Blog</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Articles and tutorials
+                    </p>
+                  </Link>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Company</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                  <Link to="/about" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">About Us</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Learn about our company and mission
+                    </p>
+                  </Link>
+                  <Link to="/contact" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Contact</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Get in touch with our team
+                    </p>
+                  </Link>
+                  <Link to="/privacy" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <div className="text-sm font-medium leading-none">Privacy Policy</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Our privacy practices
+                    </p>
+                  </Link>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
         
         <div className="hidden md:flex items-center space-x-4">
           {isLoggedIn ? (
@@ -130,6 +206,34 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Guide
+            </Link>
+            <Link 
+              to="/blog" 
+              className="px-4 py-2 hover:bg-gray-50 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Blog
+            </Link>
+            <Link 
+              to="/about" 
+              className="px-4 py-2 hover:bg-gray-50 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About Us
+            </Link>
+            <Link 
+              to="/contact" 
+              className="px-4 py-2 hover:bg-gray-50 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact
+            </Link>
+            <Link 
+              to="/privacy" 
+              className="px-4 py-2 hover:bg-gray-50 transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Privacy Policy
             </Link>
             <div className="px-4 py-2">
               {isLoggedIn ? (

@@ -80,6 +80,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/blog" className="text-sm text-gray-500 hover:text-blue-600">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
                   API Documentation
                 </a>
@@ -89,11 +94,6 @@ const Footer = () => {
                   Research Papers
                 </a>
               </li>
-              <li>
-                <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
-                  Blog
-                </a>
-              </li>
             </ul>
           </div>
           
@@ -101,23 +101,23 @@ const Footer = () => {
             <h3 className="font-medium mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
+                <Link to="/about" className="text-sm text-gray-500 hover:text-blue-600">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
+                <Link to="/contact" className="text-sm text-gray-500 hover:text-blue-600">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="text-sm text-gray-500 hover:text-blue-600">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-sm text-gray-500 hover:text-blue-600">
                   Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="mailto:contact@handwritinggenius.com" className="text-sm text-gray-500 hover:text-blue-600">
-                  Contact
                 </a>
               </li>
             </ul>

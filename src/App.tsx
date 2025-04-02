@@ -12,6 +12,10 @@ import GalleryPage from "./pages/GalleryPage";
 import ColabPage from "./pages/ColabPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
+import BlogPage from "./pages/BlogPage";
+import AboutPage from "./pages/AboutPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import ContactPage from "./pages/ContactPage";
 import { NotebookProvider } from "./context/NotebookContext";
 
 const queryClient = new QueryClient();
@@ -32,6 +36,10 @@ const App = () => {
               <Route path="/gallery" element={<GalleryPage />} />
               <Route path="/colab" element={<ColabPage />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </NotebookProvider>
